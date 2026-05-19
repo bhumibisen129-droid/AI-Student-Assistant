@@ -1,6 +1,6 @@
 """
 pdf_handler.py
-PDF upload karo → NLP se summarize karo → voice mein sunao
+PDF upload  → summarize → voice 
 Uses: PyMuPDF (fitz) for extraction, Claude API for summarization
 """
 
@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 def extract_text_from_pdf(pdf_path: str) -> str:
-    """PDF ke saare pages se text nikalo"""
+    
     try:
         doc = fitz.open(pdf_path)
         full_text = []
@@ -26,10 +26,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
 
 
 def chunk_text(text: str, max_chars: int = 6000) -> list[str]:
-    """
-    Bade documents ko chunks mein toddo
-    taaki Claude API ka context limit na toote
-    """
+    
     paragraphs = text.split('\n\n')
     chunks = []
     current = ""
@@ -46,17 +43,14 @@ def chunk_text(text: str, max_chars: int = 6000) -> list[str]:
 
 
 def clean_text(text: str) -> str:
-    """Unnecessary whitespace aur symbols hataao"""
+    
     text = re.sub(r'\n{3,}', '\n\n', text)
     text = re.sub(r' {2,}', ' ', text)
     return text.strip()
 
 
 async def summarize_with_claude(text: str, topic: str = "") -> str:
-    """
-    Claude API se summary lo (async).
-    Ye function main.py se call hoga jahaan httpx available hai.
-    """
+    
     import httpx
 
     topic_hint = f"The document is about: {topic}." if topic else ""

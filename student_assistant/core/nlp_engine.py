@@ -1,6 +1,6 @@
 """
 nlp_engine.py
-Student ke commands ko samjho — kya karna chahte hain?
+Student command — what to do?
 Pure rule-based (fast, offline, no API needed for intent)
 """
 
@@ -91,7 +91,7 @@ def classify_intent(text: str) -> tuple[str, str]:
         if hits:
             scores[intent] = hits
     if not scores:
-        # Default: agar sentence mein question mark hai ya wh-word hai → question
+        
         if "?" in text or re.match(r"^(what|who|when|where|why|how)", lower):
             return "ask_question", "medium"
         return "ask_question", "low"

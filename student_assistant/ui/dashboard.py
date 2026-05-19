@@ -133,7 +133,7 @@ class StudentAssistantApp:
         )
         self.chat_input.pack(side="left", fill="x", expand=True, padx=(0, 8))
         
-        # 🆕 सीधे self._send_text को बाइंड करें, बिना lambda के!
+        
         self.chat_input.bind("<Return>", self._send_text)
         self.chat_input.insert(0, "Type or speak your question...")
         self.chat_input.bind("<FocusIn>", lambda e: self.chat_input.delete(0, "end")
@@ -146,7 +146,7 @@ class StudentAssistantApp:
         )
         self.mic_btn.pack(side="left", padx=(0, 4))
 
-        # 🛑 शुरुआत में यह डिसेबल और ग्रे रहेगा
+        
         self.stop_btn = tk.Button(
             input_frame, text="🛑 Stop", bg="#64748b", fg="#fff",
             font=FONT_MAIN, relief="flat", cursor="hand2",
@@ -183,23 +183,23 @@ class StudentAssistantApp:
             
         self.chat_input.delete(0, "end")
         
-        # 🚨 थ्रेडिंग का सटीक इस्तेमाल ताकि UI हैंग न हो
+        
         threading.Thread(target=self._process_input, args=(text,), daemon=True).start()
 
     def _process_input(self, text: str):
-        # UI अपडेट्स को थ्रेड-सेफ तरीके से शेड्यूल करें
+        
         self.root.after(0, lambda: self._append_chat("user", text))
         self.root.after(0, lambda: self._append_chat("system", "⏳ Thinking..."))
         
-        # 🛑 क्वेश्चन एंटर होते ही बटन चमकदार लाल और एक्टिव हो जाएगा
+        
         self.root.after(0, lambda: self.stop_btn.config(state="normal", bg=RED))
         
         self.is_first_chunk = True
-        self.final_full_text = ""  # पूरा टेक्स्ट स्टोर करने के लिए
+        self.final_full_text = ""  
 
         def stream_chunks_to_ui(chunk):
-            """यह फ़ंक्शन हर एक शब्द आने पर 'Thinking...' को हटाकर लाइव टेक्स्ट जोड़ेगा"""
-            self.final_full_text += chunk  # शब्द दर शब्द पूरा रिस्पॉन्स जोड़ें
+            
+            self.final_full_text += chunk  
             
             def update_ui():
                 if self.is_first_chunk:
@@ -231,7 +231,7 @@ class StudentAssistantApp:
                 update_ui_callback=stream_chunks_to_ui
             )
             
-            # 🆕 बोलने वाला अचूक लॉजिक (Windows SAPI5)
+            
             text_to_speak = ""
             if result and "response" in result and result["response"]:
                 text_to_speak = result["response"]
@@ -239,13 +239,11 @@ class StudentAssistantApp:
                 text_to_speak = self.final_full_text
 
             if text_to_speak:
-                # क्लीन टेक्स्ट करें (इमोजी या स्पेशल कैरेक्टर्स हटा दें ताकि इंजन न अटके)
+                
                 clean_text = text_to_speak.replace("⏹", "").replace("⏳", "").strip()
                 
-                # अलग थ्रेड में बोलेंगे ताकि बोलते समय भी UI न अटके
                 def speak_in_background():
                     try:
-                        # Windows का डिफ़ॉल्ट वॉइस ऑब्जेक्ट हर बार नया थ्रेड में बनाना पड़ता है
                         speaker = win32com.client.Dispatch("SAPI.SpVoice")
                         speaker.Speak(clean_text)
                     except Exception as speech_err:
@@ -259,19 +257,19 @@ class StudentAssistantApp:
         except Exception as e:
             self.root.after(0, lambda: self._append_chat("system", f"Error: {str(e)}"))
         finally:
-            # 💤 जवाब आने के बाद बटन वापस डिसेबल
+            
             self.root.after(0, lambda: self.stop_btn.config(state="disabled", bg="#64748b"))
     
     def _stop_ai_generation(self):
-        """जब यूज़र Stop बटन दबाएगा"""
+        
         from core import assistant_brain
-        assistant_brain.interrupt_generation()  # बैकएंड को रोकने का इशारा भेजें
+        assistant_brain.interrupt_generation()  
         self._set_status("🛑 Generation stopped by user.")
-        # बटन को तुरंत डिसेबल और ग्रे कर दें
+        
         self.stop_btn.config(state="disabled", bg="#64748b")
 
     def _show_response(self, result: dict):
-        # Remove "Thinking..." line
+        
         self.chat_display.config(state="normal")
         content = self.chat_display.get("1.0", "end")
         if "⏳ Thinking..." in content:
@@ -296,12 +294,12 @@ class StudentAssistantApp:
         self._set_status(f"Intent: {result['intent']} | Action: {action}")
 
     def _trigger_speech(self, text_):
-        """यह फ़ंक्शन बिना UI को अटकाए आवाज़ को चालू करेगा"""
+        
         try:
-            # अगर आपकी फ़ाइल में self._speak फ़ंक्शन है
+            
             if hasattr(self, '_speak'):
                 self._speak(text_)
-            # अगर आपके पास voice_engine नाम का मॉड्यूल इम्पोर्टेड है
+            
             elif 'voice_engine' in globals():
                 globals()['voice_engine'].speak(text_)
         except Exception as msg:
@@ -327,7 +325,7 @@ class StudentAssistantApp:
 
         threading.Thread(target=_listen, daemon=True).start()
 
-    # ── [बाकी का Timetable, Notes, Reminders, PDF और Status Bar का कोड वैसा ही रहेगा] ──
+    
     # ═══════════════════════════════════════════════════════════════════════════
     # TAB 2: TIMETABLE
     # ═══════════════════════════════════════════════════════════════════════════

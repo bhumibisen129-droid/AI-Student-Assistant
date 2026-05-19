@@ -1,6 +1,6 @@
 """
 voice_engine.py
-Speech-to-Text (mic se suno) + Text-to-Speech (bol ke batao)
+Speech-to-Text  + Text-to-Speech 
 Libraries: SpeechRecognition, pyttsx3
 """
 
@@ -24,7 +24,7 @@ class VoiceEngine:
     # ── TTS Config ──────────────────────────────────────────────────────────
     def _configure_tts(self):
         voices = self.engine.getProperty('voices')
-        # Female voice prefer karo agar available ho
+        
         for voice in voices:
             if 'female' in voice.name.lower() or 'zira' in voice.name.lower():
                 self.engine.setProperty('voice', voice.id)
@@ -45,10 +45,7 @@ class VoiceEngine:
 
     # ── STT ─────────────────────────────────────────────────────────────────
     def listen(self, timeout: int = 5, phrase_limit: int = 10) -> str | None:
-        """
-        Mic se suno aur text return karo.
-        Returns None agar kuch samajh na aaye.
-        """
+        
         with sr.Microphone() as source:
             print("[Listening...]")
             self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
@@ -68,10 +65,7 @@ class VoiceEngine:
                 return None
 
     def listen_continuous(self, callback):
-        """
-        Background mein continuously suno.
-        callback(text) ko call karta hai jab bhi kuch suna.
-        """
+        
         self.is_listening = True
 
         def _loop():
@@ -90,9 +84,9 @@ class VoiceEngine:
 # ── Quick test ───────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     ve = VoiceEngine()
-    ve.speak("Hello! Main tumhara AI student assistant hoon. Bolo kya madad chahiye?")
+    ve.speak("Hello! I’m your AI student assistant. Tell me, how can I help you?")
     text = ve.listen()
     if text:
-        ve.speak(f"Tumne kaha: {text}")
+        ve.speak(f"You said: {text}")
     else:
         ve.speak("Mujhe kuch samajh nahi aaya, phir se bolna.")

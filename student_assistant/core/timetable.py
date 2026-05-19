@@ -1,6 +1,6 @@
 """
 timetable.py
-Class schedule manage karo — add, show, today's classes
+Class schedule manage  — add, show, today's classes
 """
 
 import json

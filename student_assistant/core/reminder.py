@@ -1,6 +1,6 @@
 """
 reminder.py
-Reminders set karo, store karo, aur sahi time pe alert doo
+Reminders set, store , right time alert 
 Uses: threading + JSON storage
 """
 
@@ -30,7 +30,7 @@ def _save(reminders: list):
 
 def _parse_time(text: str) -> datetime | None:
     """
-    Natural language time parse karo:
+    Natural language time parse :
     "5pm", "5:30pm", "17:00", "in 10 minutes", "tomorrow 9am"
     """
     now = datetime.now()
@@ -83,10 +83,7 @@ def _parse_time(text: str) -> datetime | None:
 
 
 def add_reminder(message: str, time_str: str, callback=None) -> dict:
-    """
-    Reminder add karo aur background thread start karo
-    callback(message) jab time aaye
-    """
+    
     dt = _parse_time(time_str)
     if dt is None:
         return {"success": False, "error": f"Could not parse time: '{time_str}'"}
@@ -115,7 +112,7 @@ def add_reminder(message: str, time_str: str, callback=None) -> dict:
 
 
 def _start_watcher(reminder: dict, callback):
-    """Background thread jo reminder ke time pe fire karta hai"""
+    
     def _watch():
         target = datetime.fromisoformat(reminder["time"])
         while True:
@@ -141,7 +138,7 @@ def _start_watcher(reminder: dict, callback):
 
 
 def get_reminders(include_triggered: bool = False) -> list:
-    """Saare reminders return karo"""
+    
     reminders = _load()
     if not include_triggered:
         reminders = [r for r in reminders if not r["triggered"]]
@@ -159,9 +156,9 @@ def delete_reminder(reminder_id: int) -> bool:
 
 
 def format_reminders_text(reminders: list) -> str:
-    """Human-readable format mein reminders"""
+    
     if not reminders:
-        return "Koi reminder nahi hai abhi."
+        return "There are no reminders right now."
     lines = []
     for i, r in enumerate(reminders, 1):
         dt = datetime.fromisoformat(r["time"])
@@ -171,7 +168,7 @@ def format_reminders_text(reminders: list) -> str:
 
 
 def restore_reminders_on_startup(callback):
-    """App restart hone pe pending reminders restore karo"""
+    
     reminders = get_reminders()
     now = datetime.now()
     restored = 0

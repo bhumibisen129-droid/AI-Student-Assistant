@@ -1,6 +1,6 @@
 """
 notes.py
-Voice se notes lo, save karo, dhundo, aur Claude se format karo
+
 """
 
 import json
@@ -33,12 +33,12 @@ def save_note(content: str, title: str = "", subject: str = "") -> dict:
     timestamp = datetime.now()
     note_id   = int(timestamp.timestamp() * 1000)
 
-    # Auto title agar nahi diya
+    
     if not title:
         words = content.split()[:5]
         title = " ".join(words).title() + "..."
 
-    # Subject detect karo content se
+    
     if not subject:
         subjects = ["physics", "math", "chemistry", "biology", "history",
                     "geography", "english", "computer", "python", "ai", "ml"]
@@ -90,7 +90,7 @@ def get_all_notes(subject: str = "", limit: int = 20) -> list:
 
 
 def search_notes(query: str) -> list:
-    """Notes mein search karo"""
+
     results = []
     index = _load_index()
     query_lower = query.lower()
